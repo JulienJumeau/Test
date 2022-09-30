@@ -19,28 +19,30 @@ namespace TeasingGame
 			_teasingGameManager = TeasingGameManager.Instance;
 		}
 
-		// Update is called once per frame
-		private void Update()
-		{
-
-		}
-
 		#endregion
 
 		#region Custom Methods
 
+		/// <summary>
+		/// Method called when the game start buton si pressed
+		/// </summary>
 		public void StartTeasingGame()
 		{
 			StartButtonPressed();
+		}
+
+		public void Win()
+		{
+			Debug.Log("Win");
 		}
 
 		#endregion
 
 		#region Events
 
-		// Event to trigger when the shoot button state change ( Args : empty )
+		// Event to trigger when the game start buton si pressed ( Args : empty )
 
-		public event EventHandler OnStartButtonPressed;
+		internal event EventHandler OnStartButtonPressed;
 
 		private void StartButtonPressed() => OnStartButtonPressed?.Invoke(this, EventArgs.Empty);
 

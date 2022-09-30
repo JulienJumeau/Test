@@ -7,9 +7,12 @@ namespace TeasingGame
 	{
 		#region Fields & Properties
 
+		[SerializeField] private Cell[] _cellsArray = null;
+		[SerializeField] private CellsTile[] _cellsImageArray = null;
 		private GameManager _gameManagerInstance;
-		[SerializeField] private GameObject[] _cellsArray;
-		[SerializeField] private Cells[] _cellsImageArray;
+		private int _draggedCellID;
+		private int _droppedOnCellID;
+		private bool _canBeSwapped;
 
 		#endregion
 
@@ -21,11 +24,18 @@ namespace TeasingGame
 			EventSubscription(true);
 		}
 
+		protected override void Awake()
+		{
+			base.Awake();
+			_canBeSwapped = false;
+		}
+
 		// Start is called before the first frame update
 		private void Start()
 		{
 			_gameManagerInstance = GameManager.Instance;
 			EventSubscription(true);
+			CheckIfRightOrder();
 		}
 
 		// This function is called when the behaviour becomes disabled and when the object is destroyed
@@ -72,6 +82,8 @@ namespace TeasingGame
 				_cellsImageArray[array[i]].transform.position = _cellsArray[i].transform.position;
 				_cellsImageArray[array[i]].transform.SetParent(_cellsArray[i].transform);
 			}
+
+			_canBeSwapped = true;
 		}
 
 		/// <summary>
@@ -111,9 +123,84 @@ namespace TeasingGame
 			return (inv_count % 2 == 0);
 		}
 
-		#endregion
+		/// <summary>
+		/// Method called when a tile is dragged or droppedOn
+		/// </summary>
+		/// <param name="isDragged">True = Dragged, False = DroppedOn</param>
+		/// <param name="cell">The cell being dragged or droppedOn</param>
+		internal void TileDragAndDroppedOn(bool isDragged, CellsTile cell)
+		{
+			if (_canBeSwapped)
+			{
+				if (isDragged)
+				{
+					_draggedCellID = cell.TileId - 1;
+				}
 
-		#region Events
+				else
+				{
+					_droppedOnCellID = cell.TileId - 1;
+
+					if (_droppedOnCellID == 4 && CheckCellAuthorizedMove())
+					{
+						SwapCells();
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Method called to ckeck if the teasing game swap tile move is authorized
+		/// Up/Down/Left/Right Only
+		/// </summary>
+		/// <returns>Return true if authorized</returns>
+		private bool CheckCellAuthorizedMove()
+		{
+			int startCellID = _cellsImageArray[_draggedCellID].transform.parent.GetComponent<Cell>().CellId;
+			int endCellID = _cellsImageArray[_droppedOnCellID].transform.parent.GetComponent<Cell>().CellId;
+
+			return startCellID + 1 == endCellID ||
+				startCellID - 1 == endCellID ||
+				startCellID + 3 == endCellID ||
+				startCellID - 3 == endCellID;
+		}
+
+		/// <summary>
+		/// Method called to swap tiles 
+		/// </summary>
+		private void SwapCells()
+		{
+			Vector3 tempPosition = _cellsImageArray[_draggedCellID].transform.position;
+			Transform tempParent = _cellsImageArray[_draggedCellID].transform.parent;
+			_cellsImageArray[_draggedCellID].transform.position = _cellsImageArray[_droppedOnCellID].transform.position;
+			_cellsImageArray[_draggedCellID].transform.SetParent(_cellsImageArray[_droppedOnCellID].transform.parent);
+			_cellsImageArray[_droppedOnCellID].transform.position = tempPosition;
+			_cellsImageArray[_droppedOnCellID].transform.SetParent(tempParent);
+
+			if (CheckIfRightOrder())
+			{
+				_gameManagerInstance.Win();
+			}
+		}
+
+		/// <summary>
+		/// Method called to check if the puzzle is solved and call WIN method in GameManager
+		/// </summary>
+		/// <returns>Return true if the puzzle solved</returns>
+		private bool CheckIfRightOrder()
+		{
+			for (int i = 0; i < _cellsArray.Length; i++)
+			{
+				Cell cell = _cellsArray[i];
+
+				if (cell.transform.GetChild(0).GetComponent<CellsTile>().TileId != i + 1)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
 
 		#endregion
 	}

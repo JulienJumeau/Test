@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4444354973064598711}
+  - component: {fileID: 6484206038851866489}
   m_Layer: 5
   m_Name: pfb_Teasing_Cell
   m_TagString: Untagged
@@ -36,6 +37,19 @@ RectTransform:
   m_AnchoredPosition: {x: -200, y: 200}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &6484206038851866489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4444354973064598710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852a25cad87bd204fb2b6a97f76ad174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cellId: 0
 --- !u!1 &7888993648607756763
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,4 +138,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 482a9fdad01bd0347b9a35dbc013bc14, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cellId: 1
+  _tileId: 0

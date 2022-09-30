@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace TeasingGame.Extension
 {
-    public static class Extensions
+    internal static class Extensions
     {
 		/// <summary>
 		/// Method called to shuffle an int array
 		/// </summary>
 		/// <param name="arrayToShuffle">Array to shuffle</param>
-		public static void ShuffleArray(int[] arrayToShuffle)
+		internal static void ShuffleArray(int[] arrayToShuffle)
 		{
 			int tempInt;
 
@@ -19,6 +19,25 @@ namespace TeasingGame.Extension
 				arrayToShuffle[rnd] = arrayToShuffle[i];
 				arrayToShuffle[i] = tempInt;
 			}
+		}
+
+		/// <summary>
+		/// Transforms a point from screen space into world space, where world space 
+		/// is defined as the coordinate system at the very top of your game's hierarchy.
+		/// </summary>
+		internal static Vector3 ScreenToWorld(Camera camera, Vector3 position)
+		{
+			position.z = camera.nearClipPlane;
+			return camera.ScreenToWorldPoint(position);
+		}
+
+		/// <summary>
+		/// Returns a ray going from camera through a screen point
+		/// </summary>
+		internal static Ray ScreenToRay(Camera camera, Vector3 position)
+		{
+			position.z = camera.nearClipPlane;
+			return camera.ScreenPointToRay(position);
 		}
 	}
 }
